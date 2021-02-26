@@ -1,14 +1,29 @@
 const form = document.querySelector('.quiz-form')
-
 const correctAnswers = ['A', 'B', 'B', 'A']
+let score = 0
 
-const userScoreMessage = document.createElement('p')
-userScoreMessage.setAttribute('class', 'my-3 text-dark')
+const scoreMessage = document.createElement('p')
 
-form.addEventListener('submit', event => {
+scoreMessage.setAttribute('class', 'my-3 text-dark')
+
+const checkUserAnswer = (userAnswer, index) => {
+  const isCorrectAnswer = userAnswer === correctAnswers[index]
+
+  if (isCorrectAnswer) {
+    score += 25 / userAnswer.length
+  }
+}
+
+const insertScoreIntoScreen = () => {
+  scoreMessage.textContent = `Você acertou ${score}% das questões`
+
+  form.insertAdjacentElement('afterend', scoreMessage)
+}
+
+const getQuizResult = event => {
   event.preventDefault()
 
-  let score = 0
+  score = 0
 
   const userAnswers = [
     form.inputQuestion1.value,
@@ -17,13 +32,9 @@ form.addEventListener('submit', event => {
     form.inputQuestion4.value
   ]
 
-  userAnswers.forEach((userAnswer, index) => {
-    if (userAnswer === correctAnswers[index]) {
-      score += 25
-    }
-  })
+  userAnswers.forEach(checkUserAnswer)
   
-  userScoreMessage.textContent = `Você acertou ${score}% das questões`
+  insertScoreIntoScreen()
+}
 
-  form.insertAdjacentElement('afterend', userScoreMessage)
-})
+form.addEventListener('submit', getQuizResult)
