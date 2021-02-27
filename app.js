@@ -1,26 +1,27 @@
 const form = document.querySelector('.quiz-form')
+const button = document.querySelector('.btn')
 const correctAnswers = ['A', 'B', 'B', 'A']
+const totalQuestions = correctAnswers.length
+const scoreMessageEl = document.createElement('p')
+
 let score = 0
 
-const scoreMessage = document.createElement('p')
-
-scoreMessage.setAttribute('class', 'my-3 text-dark')
-
-const checkUserAnswer = (userAnswer, index) => {
+const checkUserAnswers = (userAnswer, index) => {
   const isCorrectAnswer = userAnswer === correctAnswers[index]
 
   if (isCorrectAnswer) {
-    score += 25 / userAnswer.length
+    score += 100 / totalQuestions
   }
 }
 
 const insertScoreIntoScreen = () => {
-  scoreMessage.textContent = `Você acertou ${score}% das questões`
+  scoreMessageEl.setAttribute('class', 'my-3 text-dark text-left lead font-weight-bold')
+  scoreMessageEl.textContent = `Você acertou ${score}% das questões`
 
-  form.insertAdjacentElement('afterend', scoreMessage)
+  button.insertAdjacentElement('beforebegin', scoreMessageEl)
 }
 
-const getQuizResult = event => {
+const submitUserAnswers = event => {
   event.preventDefault()
 
   score = 0
@@ -32,9 +33,9 @@ const getQuizResult = event => {
     form.inputQuestion4.value
   ]
 
-  userAnswers.forEach(checkUserAnswer)
+  userAnswers.forEach(checkUserAnswers)
   
   insertScoreIntoScreen()
 }
 
-form.addEventListener('submit', getQuizResult)
+form.addEventListener('submit', submitUserAnswers)
