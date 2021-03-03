@@ -1,24 +1,21 @@
 const form = document.querySelector('.quiz-form')
-const button = document.querySelector('.btn')
+const finalResult = document.querySelector('.result')
+
 const correctAnswers = ['A', 'B', 'B', 'A']
 const totalQuestions = correctAnswers.length
-const scoreMessageEl = document.createElement('p')
 
-let score = 0
+let score = null
+
+const incrementScore = () => {
+  score += 100 / totalQuestions
+}
 
 const checkUserAnswers = (userAnswer, index) => {
   const isCorrectAnswer = userAnswer === correctAnswers[index]
 
   if (isCorrectAnswer) {
-    score += 100 / totalQuestions
+    incrementScore()
   }
-}
-
-const insertScoreIntoScreen = () => {
-  scoreMessageEl.setAttribute('class', 'my-3 text-dark text-left lead font-weight-bold')
-  scoreMessageEl.textContent = `Você acertou ${score}% das questões`
-
-  button.insertAdjacentElement('beforebegin', scoreMessageEl)
 }
 
 const submitUserAnswers = event => {
@@ -35,7 +32,20 @@ const submitUserAnswers = event => {
 
   userAnswers.forEach(checkUserAnswers)
   
-  insertScoreIntoScreen()
+  scrollTo(0, 0)
+
+  finalResult.classList.remove('d-none')
+  
+  let counter = 0
+  
+  const timer = setInterval(() => {
+    if (counter === score) {
+      clearInterval(timer)
+    }
+    
+    finalResult.querySelector('span').textContent = `${counter}%`
+    counter++
+  }, 10)
 }
 
 form.addEventListener('submit', submitUserAnswers)
