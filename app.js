@@ -18,6 +18,26 @@ const checkUserAnswers = (userAnswer, index) => {
   }
 }
 
+const animateScore = () => {
+  let counter = 0
+  
+  const timer = setInterval(() => {
+    if (counter === score) {
+      clearInterval(timer)
+    }
+    
+    finalResult.querySelector('span').textContent = `${counter}%`
+    counter++
+  }, 10)
+}
+
+const showScore = () => {
+  scrollTo(0, 0)
+
+  finalResult.classList.remove('d-none')
+  finalResult.querySelector('span').textContent = `${score}%`
+}
+
 const submitUserAnswers = event => {
   event.preventDefault()
 
@@ -32,20 +52,9 @@ const submitUserAnswers = event => {
 
   userAnswers.forEach(checkUserAnswers)
   
-  scrollTo(0, 0)
+  showScore()
 
-  finalResult.classList.remove('d-none')
-  
-  let counter = 0
-  
-  const timer = setInterval(() => {
-    if (counter === score) {
-      clearInterval(timer)
-    }
-    
-    finalResult.querySelector('span').textContent = `${counter}%`
-    counter++
-  }, 10)
+  animateScore()
 }
 
 form.addEventListener('submit', submitUserAnswers)
