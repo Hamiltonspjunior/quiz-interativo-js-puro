@@ -1,29 +1,43 @@
 const quizForm = document.querySelector('.quiz-form')
-const finalResult = document.querySelector('.result')
+const finalScoreContainer = document.querySelector('.final-score-container')
 
 const correctAnswers = ['A', 'B', 'B', 'C']
 
 let score = 0
 
-const checkUserAnswers = (userAnswer, index) => {
-  const isCorrectAnswer = userAnswer.value === correctAnswers[index]
-  const scoreIncrement = 100 / correctAnswers.length
-  
-  if (isCorrectAnswer) {
-    score += scoreIncrement
-  }
+const getUserAnswers = () => {
+  const userAnswers = []
+
+  correctAnswers.forEach((_, index) => {
+    const userAnswer = quizForm[`inputQuestion${index + 1}`].value
+
+    userAnswers.push(userAnswer)
+  })
+
+  return userAnswers
 }
 
-const showResult = () => {
-  finalResult.classList.remove('d-none')
-  finalResult.querySelector('span').textContent = `${score}%`
+const calculateFinalUserScore = userAnswers => {
+  userAnswers.forEach((userAnswer, index) => {
+    const isUserAnswerCorrect = userAnswer === correctAnswers[index]
 
-  scrollTo(0, 0)
-
-  animateScore()
+    if (isUserAnswerCorrect) {
+      score += 100 / correctAnswers.length
+    }
+  })
 }
 
-const animateScore = () => {
+const showFinalScore = () => {
+  scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'smooth'
+  })
+
+  finalScoreContainer.classList.remove('d-none')
+}
+
+const animateFinalScore = () => {
   let counter = 0
 
   const counterID = setInterval(() => {
@@ -31,7 +45,7 @@ const animateScore = () => {
       clearInterval(counterID)
     }
 
-    finalResult.querySelector('span').textContent = `${counter++}%`
+    finalScoreContainer.querySelector('span').textContent = `${counter++}%`
   }, 10)
 }
 
@@ -40,11 +54,11 @@ const submitUserAnswers = event => {
 
   score = 0
 
-  const userAnswers = quizForm.querySelectorAll('input[type="radio"]:checked')
+  const userAnswers = getUserAnswers()
 
-  userAnswers.forEach(checkUserAnswers)
-
-  showResult()
+  calculateFinalUserScore(userAnswers)
+  showFinalScore()
+  animateFinalScore()
 }
 
 quizForm.addEventListener('submit', submitUserAnswers)
