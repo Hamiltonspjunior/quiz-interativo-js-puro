@@ -1,41 +1,38 @@
-const form = document.querySelector('.quiz-form')
+const quizForm = document.querySelector('.quiz-form')
 const finalResult = document.querySelector('.result')
 
-const correctAnswers = ['A', 'B', 'B', 'A']
-const totalQuestions = correctAnswers.length
+const correctAnswers = ['A', 'B', 'B', 'C']
 
-let score = null
-
-const incrementScore = () => {
-  score += 100 / totalQuestions
-}
+let score = 0
 
 const checkUserAnswers = (userAnswer, index) => {
-  const isCorrectAnswer = userAnswer === correctAnswers[index]
-
+  const isCorrectAnswer = userAnswer.value === correctAnswers[index]
+  const scoreIncrement = 100 / correctAnswers.length
+  
   if (isCorrectAnswer) {
-    incrementScore()
+    score += scoreIncrement
   }
+}
+
+const showResult = () => {
+  finalResult.classList.remove('d-none')
+  finalResult.querySelector('span').textContent = `${score}%`
+
+  scrollTo(0, 0)
+
+  animateScore()
 }
 
 const animateScore = () => {
   let counter = 0
-  
-  const timer = setInterval(() => {
+
+  const counterID = setInterval(() => {
     if (counter === score) {
-      clearInterval(timer)
+      clearInterval(counterID)
     }
-    
-    finalResult.querySelector('span').textContent = `${counter}%`
-    counter++
+
+    finalResult.querySelector('span').textContent = `${counter++}%`
   }, 10)
-}
-
-const showScore = () => {
-  scrollTo(0, 0)
-
-  finalResult.classList.remove('d-none')
-  finalResult.querySelector('span').textContent = `${score}%`
 }
 
 const submitUserAnswers = event => {
@@ -43,18 +40,11 @@ const submitUserAnswers = event => {
 
   score = 0
 
-  const userAnswers = [
-    form.inputQuestion1.value,
-    form.inputQuestion2.value,
-    form.inputQuestion3.value,
-    form.inputQuestion4.value
-  ]
+  const userAnswers = quizForm.querySelectorAll('input[type="radio"]:checked')
 
   userAnswers.forEach(checkUserAnswers)
-  
-  showScore()
 
-  animateScore()
+  showResult()
 }
 
-form.addEventListener('submit', submitUserAnswers)
+quizForm.addEventListener('submit', submitUserAnswers)
