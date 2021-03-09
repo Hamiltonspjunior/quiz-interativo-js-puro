@@ -6,25 +6,22 @@ const correctAnswers = ['A', 'B', 'B', 'C']
 let score = 0
 
 const getUserAnswers = () => {
-  const userAnswers = []
-
-  correctAnswers.forEach((_, index) => {
-    const userAnswer = quizForm[`inputQuestion${index + 1}`].value
-
-    userAnswers.push(userAnswer)
-  })
+  const userAnswers = correctAnswers.map((_, index) => 
+    quizForm[`inputQuestion${index + 1}`].value)
 
   return userAnswers
 }
 
 const calculateFinalUserScore = userAnswers => {
-  userAnswers.forEach((userAnswer, index) => {
+  score = userAnswers.reduce((currentScore, userAnswer, index) => {
     const isUserAnswerCorrect = userAnswer === correctAnswers[index]
 
     if (isUserAnswerCorrect) {
-      score += 100 / correctAnswers.length
+      currentScore += 100 / correctAnswers.length
     }
-  })
+
+    return currentScore
+  }, 0)
 }
 
 const showFinalScore = () => {
